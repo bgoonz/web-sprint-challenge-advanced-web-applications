@@ -1,155 +1,87 @@
-// import React, { useState } from "react";
-// import { useHistory } from "react-router-dom";
-// import axios from "axios";
-// const Login = () => {
-//   // make a post request to retrieve a token from the api
-//   // when you have handled the token, navigate to the BubblePage route
-// 
-//   const [loginInfo, setLoginInfo] = useState({
-//     username: "",
-//     password: "",
-//   });
-// 
-//   const [error, setError] = useState("");
-// 
-//   const { push } = useHistory();
-// 
-//   const handleChanges = (e) => {
-//     setLoginInfo({ ...loginInfo, [e.target.name]: e.target.value });
-//   };
-// 
-//   const submitHandler = (e) => {
-//     // make a post request to retrieve a token from the api
-//     // when you have handled the token, navigate to the BubblePage route
-//     e.preventDefault();
-//     axios
-//       .post("http://localhost:5000/api/login", loginInfo)
-//       .then((res) => {
-//         localStorage.setItem("token", res.data.payload);
-//         push("/protected");
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//     //If no username or password is entered than display error
-//     if (loginInfo.username === "" || loginInfo.password === "") {
-//       setError("Username and Password field is required.");
-//       //If username and password don't match correct information then display error
-//     } else if (
-//       loginInfo.username !== "Lambda" ||
-//       loginInfo.password !== "School"
-//     ) {
-//       setError("Incorrect Login.");
-//     }
-//   };
-// 
-//   return (
-//     <div>
-//       <h1>Welcome to the Bubble App!</h1>
-//       <div data-testid="loginForm" className="login-form">
-//         <h2>Build login form here</h2>
-//       </div>
-//       <form onSubmit={submitHandler}>
-//         <input
-//           data-testid="username"
-//           name="username"
-//           type="text"
-//           value={loginInfo.username}
-//           placeholder="Username"
-//           onChange={handleChanges}
-//         />
-//         <input
-//           data-testid="password"
-//           name="password"
-//           type="password"
-//           value={loginInfo.password}
-//           placeholder="Password"
-//           onChange={handleChanges}
-//         />
-//         <button>Login</button>
-//       </form>
-//       <p data-testid="errorMessage" className="error">
-//         {error}
-//       </p>
-//     </div>
-//   );
-// };
-// 
-// export default Login;
-
-
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
-import Axios from 'axios';
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
-  const history = useHistory();
+  const initialState = {
+    error: "",
+    username: "",
+    password: "",
+  };
+  const [form, setForm] = useState(initialState);
+  const { push } = useHistory();
 
-  const [ values, setValues ] = useState( { username: '', password: '' } );
-  const [ errors, setErrors ] = useState( { message: '' } );
-
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
-
-  const error = errors.message;
-  //replace with error state
-
-  const handleChange = ( e ) => {
-    const { name, value } = e.target;
-    setValues( { ...values, [ name ]: value } );
-    if ( ( name === 'username' && value.length === 0 ) || ( name === 'password' && value.length === 0 ) ) {
-      setErrors( { message: 'Username or Password not valid' } );
-    }
-    else {
-      setErrors( { message: '' } );
-    }
+  const handleChange = (event) => {
+    const { name, type, value, checked } = event.target;
+    const updateData = type === "checkbox" ? checked : value;
+    setForm({ ...form, [name]: updateData });
   };
 
-  const handleSubmit = ( e ) => {
-    e.preventDefault();
-    Axios.post( 'http://localhost:5000/api/login', values )
-      .then( res => {
-        console.log( res );
-        localStorage.setItem( 'token', res.data.payload );
-        history.push( '/protected' );
-      } )
-      .catch( err => {
-        console.log( err );
-      } );
+  const handleLogin = (event) => {
+    event.preventDefault();
+    const neoLogin = {
+      username: form.username,
+      password: form.password,
+    };
+
+    if (form.username === "" || form.password === "") {
+      setForm({ ...form, error: "Username or Password not valid." });
+    } else {
+      setForm({ ...form, error: "" });
+    }
+
+    axios
+      .post("http://localhost:5000/api/login", neoLogin)
+      .then((resp) => {
+        localStorage.setItem("token", resp.data.payload);
+        setForm(initialState);
+        push("/bubble");
+      })
+      .catch((err) => {
+        setForm({ ...form, error: "Username or Password not valid." });
+        console.log(err);
+      });
   };
 
   return (
     <div>
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
-        <h2>Build login form here</h2>
-        <form onSubmit={ handleSubmit }>
+        <label>
+          User Name
           <input
-            type='text'
-            name='username'
-            data-testid='username'
-            placeholder='Username'
-            value={ values.username }
-            onChange={ handleChange }
+            type="text"
+            data-testid="username"
+            name="username"
+            onChange={handleChange}
+            value={form.username}
           />
+        </label>
+        <label>
+          Password
           <input
-            type='password'
-            name='password'
-            data-testid='password'
-            placeholder='Password'
-            value={ values.password }
-            onChange={ handleChange }
+            type="password"
+            data-testid="password"
+            name="password"
+            onChange={handleChange}
+            value={form.password}
           />
-          <button type='submit'>Login</button>
-        </form>
+        </label>
+        <button onClick={handleLogin}>Login</button>
       </div>
 
-      <p data-testid="errorMessage" className="error">{ error }</p>
+      <p data-testid="errorMessage" className="error">
+        {form.error}
+      </p>
     </div>
   );
 };
 
 export default Login;
+
+//Task List:
+//4. If either the username or password is not entered, display the following words with the p tag provided: Username or Password not valid.
+//5. If the username / password is equal to Lambda / i<3Lambd4, save that token to localStorage.
 //Task List:
 //1. Build a form containing a username and password field.
 //2. Add whatever state nessiary for form functioning.
