@@ -31,3 +31,9 @@ export default Login;
 //3. MAKE SURE YOUR USERNAME AND PASSWORD INPUTS INCLUDE data-testid="username" and data-testid="password"
 //4. If either the username or password is not entered, display the following words with the p tag provided: Username or Password not valid.
 //5. If the username / password is equal to Lambda / i<3Lambd4, save that token to localStorage.
+
+
+/*
+ Make sure that the input
+ for your username and password includes the data - testid = "username" and data - testid = "password" attributes.These are needed for codegrade testing and codegrade autotests will fail without them.
+*/
