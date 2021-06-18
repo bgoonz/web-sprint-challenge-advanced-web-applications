@@ -37,7 +37,7 @@
 //       //If username and password don't match correct information then display error
 //     } else if (
 //       loginInfo.username !== "Lambda" ||
-//       loginInfo.password !== "i<3Lambd4"
+//       loginInfo.password !== "School"
 //     ) {
 //       setError("Incorrect Login.");
 //     }
@@ -155,7 +155,7 @@ export default Login;
 //2. Add whatever state nessiary for form functioning.
 //3. MAKE SURE YOUR USERNAME AND PASSWORD INPUTS INCLUDE data-testid="username" and data-testid="password"
 //4. If either the username or password is not entered, display the following words with the p tag provided: Username or Password not valid.
-//5. If the username / password is equal to Lambda / i<3Lambd4, save that token to localStorage.
+//5. If the username / password is equal to Lambda / School, save that token to localStorage.
 
 /*
  Make sure that the input
